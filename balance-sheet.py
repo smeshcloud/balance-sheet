@@ -48,23 +48,36 @@ def get_account(address):
   uri = explorer_api_base_url + 'accounts/' + address
   # print('Getting account info from: ' + uri)
   account = requests.get(uri).json()
-  return account["data"][0]
+  # print(account)
+  if 'data' in account:
+    return account["data"][0]
+  else:
+    return None
 
 def get_smesher(address):
   uri = explorer_api_base_url + 'smeshers/' + address
   # print('Getting smesher info from: ' + uri)
   smesher = requests.get(uri).json()
-  return smesher["data"][0]
+  if 'data' in smesher:
+    return smesher["data"][0]
+  else:
+    return None
 
 def print_accounts(accounts):
   print('ACCOUNTS')
   for address, account in accounts.items():
-    print(f'{address} - sent: {account["sent"]} received: {account["received"]} awards: {account["awards"]} balance: {account["balance"]} fees: {account["fees"]} total: {account["balance"] + account["awards"]}')
+    if account is None:
+      print(f'{address} - account not found')
+    else:
+      print(f'{address} - txs: {account["txs"]}, sent: {account["sent"]}, received: {account["received"]}, awards: {account["awards"]}, fees: {account["fees"]}, balance: {account["balance"] / 1000000000} SMH')
 
 def print_smeshers(smeshers):
   print('SMESHERS')
   for address, smesher in smeshers.items():
-    print(f'{address} - coinbase: {smesher["coinbase"]} rewards: {smesher["rewards"]}')
+    if smesher is None:
+      print(f'{address} - smesher not found')
+    else:
+      print(f'{address} - coinbase: {smesher["coinbase"]} rewards: {smesher["rewards"]}')
 
 # Main function
 def main():
